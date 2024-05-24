@@ -84,6 +84,7 @@ public class UserService {
 		ResponseStructure<String> structure = new ResponseStructure<>();
 		Optional<User> dbUser = userDao.findById(id);
 		if(dbUser.isPresent()) {
+			userDao.delete(id);
 			structure.setData("User Found");
 			structure.setMessage("User Delete");
 			structure.setStatusCode(HttpStatus.OK.value());
