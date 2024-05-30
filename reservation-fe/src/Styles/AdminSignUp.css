@@ -1,0 +1,56 @@
+.AdminSignUp {
+    background: linear-gradient(to right, #ff8a00, #da1b60);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .AdminSignUp form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  }
+  
+  .AdminSignUp label {
+    display: block;
+    margin-bottom: 6px;
+    font-family: cursive;
+    font-size: 16px;
+  }
+  
+  .AdminSignUp input {
+    width: calc(100% - 22px); /* Adjusted to accommodate padding and border */
+    padding: 10px;
+    margin-bottom: 10px; /* Reduced space between inputs */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .AdminSignUp button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #da1b60;
+    color: white;
+    cursor: pointer;
+    font-family: cursive;
+    font-size: 16px;
+  }
+  
+  .AdminSignUp button:hover {
+    background-color: #ff8a00;
+  }
+  
+  .AdminSignUp p {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .AdminSignUp p a {
+    color: #da1b60;
+    font-family: cursive;
+    font-size: 16px;
+  }

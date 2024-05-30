@@ -1,13 +1,13 @@
 package org.jsp.reservationapi.exception;
 
-public class UserNotFoundException extends RuntimeException {
-	
+public class BusNotFoundException extends RuntimeException {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public UserNotFoundException(String message) {
+	public BusNotFoundException(String message) {
 		super(message);
 	}
 

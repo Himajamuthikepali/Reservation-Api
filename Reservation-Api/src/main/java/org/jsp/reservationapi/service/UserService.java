@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.jsp.reservationapi.dao.UserDao;
 import org.jsp.reservationapi.dto.ResponseStructure;
+import org.jsp.reservationapi.dto.UserRequest;
+import org.jsp.reservationapi.dto.UserResponse;
 import org.jsp.reservationapi.exception.AdminNotFoundException;
 import org.jsp.reservationapi.exception.UserNotFoundException;
 import org.jsp.reservationapi.model.User;
@@ -16,74 +18,75 @@ import org.springframework.stereotype.Service;
 public class UserService {
 	@Autowired
 	private UserDao userDao;
-	
-	public ResponseEntity<ResponseStructure<User>> saveUser(User user){
-		ResponseStructure<User> structure = new ResponseStructure<>();
-		structure.setData(userDao.saveUser(user));
-		structure.setMessage("User Saved");
+
+	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userRequest) {
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
+		structure.setMessage("User saved");
+		User user = userDao.saveUser(mapToUser(userRequest));
+		structure.setData(mapToUserResponse(user));
 		structure.setStatusCode(HttpStatus.CREATED.value());
 		return ResponseEntity.status(HttpStatus.CREATED).body(structure);
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> update(User user){
-		Optional<User> recUser = userDao.findById(user.getId());
-		ResponseStructure<User> structure = new ResponseStructure<>();
-		if(recUser.isPresent()) {
-			User dbUser = recUser.get();
-			dbUser.setName(user.getName());
-			dbUser.setAge(user.getAge());
-			dbUser.setEmail(user.getEmail());
-			dbUser.setGender(user.getGender());
-			dbUser.setPhone(user.getPhone());
-			dbUser.setPassword(user.getPassword());
-			structure.setData(userDao.saveUser(user));
+
+	public ResponseEntity<ResponseStructure<UserResponse>> update(UserRequest userRequest, int id) {
+		Optional<User> recUser = userDao.findById(id);
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
+		if (recUser.isPresent()) {
+			User dbUser = mapToUser(userRequest);
+			dbUser.setName(userRequest.getName());
+			dbUser.setEmail(userRequest.getEmail());
+			dbUser.setPhone(userRequest.getPhone());
+			dbUser.setGender(userRequest.getGender());
+			dbUser.setAge(userRequest.getAge());
+			dbUser.setPassword(userRequest.getPassword());
+			structure.setData(mapToUserResponse(userDao.saveUser(dbUser)));
 			structure.setMessage("User Updated");
-			structure.setStatusCode(HttpStatus.CREATED.value());
-			return ResponseEntity.status(HttpStatus.CREATED).body(structure);
+			structure.setStatusCode(HttpStatus.ACCEPTED.value());
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(structure);
 		}
 		throw new UserNotFoundException("Cannot Update User As Id Is Invalid");
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> findById(int id){
-		ResponseStructure<User> structure = new ResponseStructure<>();
+
+	public ResponseEntity<ResponseStructure<UserResponse>> findById(int id) {
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
 		Optional<User> dbUser = userDao.findById(id);
-		if(dbUser.isPresent()) {
-			structure.setData(dbUser.get());
+		if (dbUser.isPresent()) {
+			structure.setData(mapToUserResponse(dbUser.get()));
 			structure.setMessage("User Found");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return ResponseEntity.status(HttpStatus.OK).body(structure);
 		}
 		throw new UserNotFoundException("Invalid User Id");
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> verify(long phone, String password){
-		ResponseStructure<User> structure = new ResponseStructure<>();
+
+	public ResponseEntity<ResponseStructure<UserResponse>> verify(long phone, String password) {
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
 		Optional<User> dbUser = userDao.verify(phone, password);
-		if(dbUser.isPresent()) {
-			structure.setData(dbUser.get());
+		if (dbUser.isPresent()) {
+			structure.setData(mapToUserResponse(dbUser.get()));
 			structure.setMessage("Verification Successfull");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return ResponseEntity.status(HttpStatus.OK).body(structure);
 		}
 		throw new UserNotFoundException("Invalid Phone Number or Password");
 	}
-	
-	public ResponseEntity<ResponseStructure<User>> verify(String email, String password){
-		ResponseStructure<User> structure = new ResponseStructure<>();
+
+	public ResponseEntity<ResponseStructure<UserResponse>> verify(String email, String password) {
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
 		Optional<User> dbUser = userDao.verify(email, password);
-		if(dbUser.isPresent()) {
-			structure.setData(dbUser.get());
+		if (dbUser.isPresent()) {
+			structure.setData(mapToUserResponse(dbUser.get()));
 			structure.setMessage("Verification Successfull");
 			structure.setStatusCode(HttpStatus.OK.value());
 			return ResponseEntity.status(HttpStatus.OK).body(structure);
 		}
 		throw new UserNotFoundException("Invalid Email Id or Password");
 	}
-	
-	public ResponseEntity<ResponseStructure<String>> delete(int id){
+
+	public ResponseEntity<ResponseStructure<String>> delete(int id) {
 		ResponseStructure<String> structure = new ResponseStructure<>();
 		Optional<User> dbUser = userDao.findById(id);
-		if(dbUser.isPresent()) {
+		if (dbUser.isPresent()) {
 			userDao.delete(id);
 			structure.setData("User Found");
 			structure.setMessage("User Delete");
@@ -91,6 +94,17 @@ public class UserService {
 			return ResponseEntity.status(HttpStatus.OK).body(structure);
 		}
 		throw new AdminNotFoundException("Cannot Delete User As Id is Invalid");
+	}
+
+	private User mapToUser(UserRequest userRequest) {
+		return User.builder().email(userRequest.getEmail()).name(userRequest.getName()).phone(userRequest.getPhone())
+				.gender(userRequest.getGender()).age(userRequest.getAge()).password(userRequest.getPassword()).build();
+	}
+
+	private UserResponse mapToUserResponse(User user) {
+		return UserResponse.builder().name(user.getName()).email(user.getEmail())
+				.phone(user.getPhone()).gender(user.getGender()).id(user.getId())
+				.age(user.getAge()).password(user.getPassword()).build();
 	}
 
 }
