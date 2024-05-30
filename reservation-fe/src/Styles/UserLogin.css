@@ -1,0 +1,25 @@
+.UserLogin form {
+    width: 600px;
+    display: grid;
+    grid-template-columns: 200px 300px;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0px 0px 20px white;
+    border-radius: 20px;
+}
+
+.UserLogin input {
+    margin: 10px;
+}
+
+.UserLogin {
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQqU-usLoUv537kWdcJmUSMj6kyCAFDXMy4g&usqp=CAU);
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}

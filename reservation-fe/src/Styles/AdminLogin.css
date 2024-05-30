@@ -1,0 +1,26 @@
+.AdminLogin form{
+    width: 600px;
+    display: grid;
+    grid-template-columns: 200px 300px;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0px 0px 20px white;
+    border-radius: 20px;
+}
+.AdminLogin input{
+    margin: 10px;
+}
+.AdminLogin{
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4_yFhwhg2KdaMNZ4wvGc3si0kQ27ndnwZlQ&usqp=CAU);
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    font-size: 20px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.AdminLogin p{
+    font-size: 25px;
+}
