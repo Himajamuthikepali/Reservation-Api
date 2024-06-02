@@ -3,7 +3,6 @@ package org.jsp.reservationapi.controller;
 import org.jsp.reservationapi.dto.BusRequest;
 import org.jsp.reservationapi.dto.BusResponse;
 import org.jsp.reservationapi.dto.ResponseStructure;
-import org.jsp.reservationapi.model.Bus;
 import org.jsp.reservationapi.service.BusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
