@@ -3,6 +3,8 @@ package org.jsp.reservationapi.exception;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.hibernate.exception.ConstraintViolationException;
 import org.jsp.reservationapi.dto.ResponseStructure;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 
 
 
@@ -43,6 +46,12 @@ public class ReservationApiExceptionHandler {
 		structure.setMessage(exception.getMessage());
 		structure.setStatusCode(HttpStatus.NOT_FOUND.value());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(structure);
+	}
+	
+	@ExceptionHandler({ ConstraintViolationException.class })
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public String handleConstraintViolationException(ConstraintViolationException ex) {
+		return ex.getErrorMessage() + " " + ex.getCause();
 	}
 
 	@ResponseStatus(HttpStatus.BAD_REQUEST)

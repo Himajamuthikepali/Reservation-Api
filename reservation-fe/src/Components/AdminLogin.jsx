@@ -1,19 +1,23 @@
 import React, { useState } from "react";
 import '../Styles/AdminLogin.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function AdminLogin() {
     let [email,setemail] = useState("")
     let [password,setpassword] = useState("")
 
+    let navigate = useNavigate()
+
     function verify(e){
         e.preventDefault()
         axios.post(`http://localhost:8080/api/admins/verify-by-email?email=$(email)&password=$(password)`)
         .then((res)=>{
+            navigate('/adminhomepage')
             alert("Login Successfull")
         })
         .catch((err)=>{
+            navigate('/PageNotFound')
             alert("Login Failed")
         })
     }

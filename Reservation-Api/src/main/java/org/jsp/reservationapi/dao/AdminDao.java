@@ -32,4 +32,7 @@ public class AdminDao {
 		adminRepository.deleteById(id);
 	}
 
+	public Optional<Admin> findByToken(String token) {
+		return adminRepository.findByToken(token);
+	}
 }

@@ -5,18 +5,30 @@ import java.util.Optional;
 import org.jsp.reservationapi.dao.AdminDao;
 import org.jsp.reservationapi.dto.AdminRequest;
 import org.jsp.reservationapi.dto.AdminResponse;
+import org.jsp.reservationapi.dto.EmailConfiguration;
 import org.jsp.reservationapi.dto.ResponseStructure;
 import org.jsp.reservationapi.exception.AdminNotFoundException;
 import org.jsp.reservationapi.model.Admin;
+import org.jsp.reservationapi.util.AccountStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import net.bytebuddy.utility.RandomString;
+
 @Service
 public class AdminService {
 	@Autowired
 	private AdminDao adminDao;
+	@Autowired
+	private ReservationApiMailService mailService;
+	@Autowired
+	private LinkGeneratorService linkGeneratorService;
+	@Autowired
+	private EmailConfiguration emailConfiguration;
+
 	
 	/**
 	 * This method will accept {@link AdminRequest} and maps it to {@link Admin} and by calling 
@@ -25,14 +37,24 @@ public class AdminService {
 	 * @return {@link ResponseEntity}
 	 * @throws ConstraintViolationException if any constraint is violated
 	 */
-	public ResponseEntity<ResponseStructure<AdminResponse>> saveAdmin(AdminRequest adminRequest){
+	public ResponseEntity<ResponseStructure<AdminResponse>> saveAdmin(AdminRequest adminRequest, HttpServletRequest request) {
+		String siteUrl = request.getRequestURL().toString();
+		String path = request.getServletPath();
+		String activation_link = siteUrl.replace(path, "/api/admins/activate");
 		ResponseStructure<AdminResponse> structure = new ResponseStructure<>();
-		structure.setMessage("Admin saved");
-		Admin admin = adminDao.saveAdmin(mapToAdmin(adminRequest));
+		String token = RandomString.make(45);
+		activation_link += "?token="+token;
+		System.out.println(activation_link);
+		Admin admin = mapToAdmin(adminRequest);
+		admin.setToken(token);
+		admin.setStatus("IN_ACTIVE");
+		adminDao.saveAdmin(admin);
+		structure.setMessage(mailService.sendMail(admin.getEmail(), activation_link));
 		structure.setData(mapToAdminResponse(admin));
 		structure.setStatusCode(HttpStatus.CREATED.value());
 		return ResponseEntity.status(HttpStatus.CREATED).body(structure);
 	}
+
 	
 	/**
 	 * This method will accept AdminRequest(DTO) and Admin Id and update the Admin in the Database if identifier is valid
@@ -122,6 +144,17 @@ public class AdminService {
 		return AdminResponse.builder().name(admin.getName()).email(admin.getEmail())
 				.gst_number(admin.getGst_number()).phone(admin.getPhone()).travels_name(admin.getTravels_name()).
 						id(admin.getId()).password(admin.getPassword()).build();
+	}
+	
+	public String activate(String token) {
+		Optional<Admin> recAdmin = adminDao.findByToken(token);
+		if(recAdmin.isEmpty()) 
+			throw new AdminNotFoundException("Invalid Token");
+		Admin dbAdmin = recAdmin.get();
+		dbAdmin.setStatus("ACTIVE");
+		dbAdmin.setToken(null);
+		adminDao.saveAdmin(dbAdmin);
+		return "Your Accoount has been Activated";
 	}
 
 }
