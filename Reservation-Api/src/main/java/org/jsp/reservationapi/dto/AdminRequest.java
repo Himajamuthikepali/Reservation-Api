@@ -15,7 +15,7 @@ public class AdminRequest {
 	@Email(message = "Invalid Format")
 	private String email;
 	@NotBlank(message = "GST Number is Mandatory")
-	@Size(min = 15,max = 15, message = "GST Number must have 15 character")
+	@Size(min = 8,max = 15, message = "GST Number must have 15 character")
 	private String gst_number;
 	@NotBlank(message = "Name is mandatory")
 	private String name;

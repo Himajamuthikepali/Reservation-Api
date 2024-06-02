@@ -22,7 +22,7 @@ public class ReservationApiMailService {
 	public String sendMail(String mail,String url) {
 		SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 		simpleMailMessage.setTo(mail);
-		simpleMailMessage.setText("Dear user, Please activate your account"+url);
+		simpleMailMessage.setText("Dear user, Please activate your account"+" "+url);
 		simpleMailMessage.setSubject("Activate your Account");
 		javaMailSender.send(simpleMailMessage);
 		return "Registration successful and Verification mail has been send";

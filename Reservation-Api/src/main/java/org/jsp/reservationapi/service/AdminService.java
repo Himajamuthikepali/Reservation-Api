@@ -5,11 +5,9 @@ import java.util.Optional;
 import org.jsp.reservationapi.dao.AdminDao;
 import org.jsp.reservationapi.dto.AdminRequest;
 import org.jsp.reservationapi.dto.AdminResponse;
-import org.jsp.reservationapi.dto.EmailConfiguration;
 import org.jsp.reservationapi.dto.ResponseStructure;
 import org.jsp.reservationapi.exception.AdminNotFoundException;
 import org.jsp.reservationapi.model.Admin;
-import org.jsp.reservationapi.util.AccountStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +20,9 @@ import net.bytebuddy.utility.RandomString;
 public class AdminService {
 	@Autowired
 	private AdminDao adminDao;
+	
 	@Autowired
 	private ReservationApiMailService mailService;
-	@Autowired
-	private LinkGeneratorService linkGeneratorService;
-	@Autowired
-	private EmailConfiguration emailConfiguration;
 
 	
 	/**
